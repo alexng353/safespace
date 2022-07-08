@@ -19,13 +19,18 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      const isAllowedToSignIn = true;
+      var isAllowedToSignIn = false;
       // only allow a user to sign in if they are already in the database
+      // check if user is already in the database
+      const userInDatabase = await prisma.user.findFirst({
+        where: {
+          email: user.email,
+        }
+      });
+      if (userInDatabase) {
+        isAllowedToSignIn = true;
+      }
       
-
-
-
-
       if (isAllowedToSignIn) {
         return true;
       } else {
